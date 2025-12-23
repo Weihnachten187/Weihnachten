@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weihnachtsquiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 50%, #0f2419 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            font-size: 1.5em;
+            opacity: 0.8;
+            animation: fall linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 50px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            position: relative;
+            z-index: 10;
+            border: 5px solid #c41e3a;
+        }
+
+        .ornament {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .ornament-1 {
+            background: #c41e3a;
+            top: -20px;
+            left: 30px;
+        }
+
+        .ornament-2 {
+            background: #ffd700;
+            top: -20px;
+            right: 30px;
+        }
+
+        .ornament-3 {
+            background: #228b22;
+            bottom: -20px;
+            left: 50px;
+        }
+
+        .ornament-4 {
+            background: #c41e3a;
+            bottom: -20px;
+            right: 50px;
+        }
+
+        h1 {
+            color: #c41e3a;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .star {
+            color: #ffd700;
+            font-size: 1.2em;
+        }
+
+        .question-box {
+            background: linear-gradient(135deg, #c41e3a 0%, #a01729 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(196, 30, 58, 0.3);
+        }
+
+        .question-box h2 {
+            font-size: 1.5em;
+            line-height: 1.6;
+        }
+
+        .answer-section {
+            margin-bottom: 30px;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 3px solid #228b22;
+            border-radius: 15px;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Georgia', serif;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            background: linear-gradient(135deg, #228b22 0%, #1a6b1a 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(34, 139, 34, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(34, 139, 34, 0.4);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+            display: block;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .progress {
+            text-align: center;
+            color: #228b22;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="ornament ornament-1"></div>
+    <div class="ornament ornament-2"></div>
+    <div class="ornament ornament-3"></div>
+    <div class="ornament ornament-4"></div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen">
+        <h1><span class="star">★</span> Weihnachtsquiz <span class="star">★</span></h1>
+        <div class="question-box">
+            <h2>🎅 Willkommen zum Weihnachtsquiz! 🎄</h2>
+        </div>
+        <div class="answer-section">
+            <input type="password" id="loginPassword" placeholder="Name eingeben...">
+        </div>
+        <button onclick="login()">Einloggen 🎁</button>
+    </div>
+
+    <!-- User Quiz Screen -->
+    <div id="quizScreen" class="hidden">
+        <h1><span class="star">★</span> Weihnachtsquiz <span class="star">★</span></h1>
+        <div class="progress">
+            <span id="progressText">Frage 1 von 10</span>
+        </div>
+        <div class="question-box">
+            <h2 id="question">🎵 Von wem ist das Lied 'Ohne dich'? 🎤</h2>
+        </div>
+        <div class="answer-section">
+            <input type="text" id="answer" placeholder="Gib deine Antwort hier ein...">
+        </div>
+        <button onclick="checkAnswer()">Antwort überprüfen ✨</button>
+        <button id="tippButton" onclick="showTipp()" class="hidden" style="background: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%); margin-top: 15px;">💡 Tipp anzeigen</button>
+        <div id="tippBox" class="feedback" style="background: #fff3cd; color: #856404; border: 2px solid #ffc107; display: none;">
+            <strong>💡 Tipp:</strong> <span id="tippText"></span>
+        </div>
+        <div id="feedback" class="feedback"></div>
+    </div>
+
+    <!-- Winner Screen for Users -->
+    <div id="userWinnerScreen" class="hidden">
+        <h1><span class="star">★</span> Herzlichen Glückwunsch! <span class="star">★</span></h1>
+        <div class="question-box">
+            <h2>🎊 Du hast alle Fragen richtig beantwortet! 🎊</h2>
+        </div>
+        <button onclick="showUserWinnerCode()" style="background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%); color: #333; margin-bottom: 20px;">🎁 Gewinner aufdecken!</button>
+        <div id="userWinnerReveal" class="hidden">
+            <div style="background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%); padding: 30px; border-radius: 20px; text-align: center; margin: 20px 0;">
+                <h2 style="color: #333; margin-bottom: 20px; font-size: 1.8em;">🏆 Geschenk 1 🏆</h2>
+                <div style="background: white; padding: 25px; border-radius: 15px; font-size: 2.5em; font-weight: bold; color: #c41e3a; letter-spacing: 3px; font-family: 'Courier New', monospace; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" id="winnerCodeDisplay"></div>
+            </div>
+            <button onclick="showSecondCode()" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); margin-bottom: 10px;">➡️ Weiter zum zweiten Code</button>
+        </div>
+        <div id="secondCodeReveal" class="hidden">
+            <div style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); padding: 30px; border-radius: 20px; text-align: center; margin: 20px 0;">
+                <h2 style="color: white; margin-bottom: 20px; font-size: 1.8em;">🎉 Geschenk 2 🎉</h2>
+                <div style="background: white; padding: 25px; border-radius: 15px; font-size: 2.5em; font-weight: bold; color: #007bff; letter-spacing: 3px; font-family: 'Courier New', monospace; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" id="secondCodeDisplay"></div>
+            </div>
+        </div>
+        <button onclick="restartQuiz()" style="margin-top: 20px;">🔄 Quiz neu starten</button>
+    </div>
+</div>
+
+<script>
+    // Schneeflocken Animation
+    function createSnowflake() {
+        const snowflake = document.createElement('div');
+        snowflake.classList.add('snowflake');
+        snowflake.innerHTML = '❄';
+        snowflake.style.left = Math.random() * 100 + '%';
+        snowflake.style.animationDuration = Math.random() * 3 + 5 + 's';
+        snowflake.style.opacity = Math.random() * 0.6 + 0.4;
+        snowflake.style.fontSize = Math.random() * 1 + 0.5 + 'em';
+        document.body.appendChild(snowflake);
+
+        setTimeout(() => {
+            snowflake.remove();
+        }, 8000);
+    }
+
+    setInterval(createSnowflake, 300);
+
+    // ============================================
+    // HIER KANNST DU DIE GEWINNER-CODES ÄNDERN
+    // ============================================
+    const Geschenk_1 = "Hftdifol 1 jo nfjofn Ajnnfs (ofv)";
+    const Geschenk_2 = "qqdz gjqx qlkrzw odjh uheurifkv odpqlh";
+
+    // Quiz Daten - HIER KANNST DU DIE TIPPS ÄNDERN
+    const questions = [
+        {
+            question: "🎵 Von wem ist das Lied 'Ohne dich'? 🎤",
+            answer: "veysel",
+            tipp: "Kleiner Cabrón ist auch von ihm"
+        },
+        {
+            question: "🎶 Aus welchem Song ist das: '20-20-20-20 vision Cupid hit me, Cupid hit me with precision'? 🎵",
+            answer: "see you again",
+            tipp: "ist von Tyler, The Creator, Kali Uchis"
+        },
+        {
+            question: "🎵 Aus welchem Song ist das: 'Sitz im Jogger voll besoffen in 'nem PKW Die Augen sind rot von dem THC'? 🎤",
+            answer: "da für dich",
+            tipp: "ist von Eddin"
+        },
+        {
+            question: "🥤 Was ist mein lieblings ISOCLEAR? 🍹",
+            answer: "mango peach",
+            tipp: "schau nach :)"
+        },
+        {
+            question: "🚗 Was nervt mich wenn ich Auto fahre? 🎵",
+            answer: "musik zu leise",
+            tipp: "Musik..."
+        },
+        {
+            question: "🎵 Was ist aktuell mein Lieblingslied? 💿",
+            answer: "ma baby",
+            tipp: "jazeek"
+        },
+        {
+            question: "🎤 Von wem ist das Lied Marlboro Rot? 🚬",
+            answer: "samra",
+            tipp: "samra"
+        },
+        {
+            question: "💪 Wer isch mein Gym Vorbild (D____ L___)? 🏋️",
+            answer: "david laid",
+            tipp: "Ist bei Gymshark gepartnert, Onyx Kollektion"
+        },
+        {
+            question: "🥊 Wer isch mein Lieblingskämpfer in MMA (I____ D______)? 🥋",
+            answer: "islam dulatov",
+            tipp: "Kommt aus Tschetschenien, hat Mode Brand Arret Du Coeur"
+        },
+        {
+            question: "🏎️ Was isch mein Traumauto (P______ G__ R_)? 🚗",
+            answer: "porsche gt3 rs",
+            tipp: "Deutsche Marke, hat ein Pferd auf dem Logo"
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let wrongAttempts = 0;
+
+    // Login Funktion
+    function login() {
+        const password = document.getElementById('loginPassword').value;
+
+        if (password.trim() !== '') {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            displayCurrentQuestion();
+        }
+    }
+
+    // Aktuelle Frage anzeigen
+    function displayCurrentQuestion() {
+        if (questions.length > 0) {
+            document.getElementById('question').innerHTML = questions[currentQuestionIndex].question;
+            document.getElementById('progressText').textContent = `Frage ${currentQuestionIndex + 1} von ${questions.length}`;
+            document.getElementById('answer').value = '';
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('tippBox').style.display = 'none';
+            document.getElementById('tippButton').classList.add('hidden');
+            wrongAttempts = 0;
+        }
+    }
+
+    // Antwort überprüfen
+    function checkAnswer() {
+        const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
+        const feedback = document.getElementById('feedback');
+        const correctAnswer = questions[currentQuestionIndex].answer.toLowerCase();
+
+        feedback.className = 'feedback';
+
+        if (userAnswer === correctAnswer) {
+            feedback.classList.add('correct');
+            feedback.innerHTML = '🎉 Richtig! Das ist die korrekte Antwort! 🎄';
+
+            // Zur nächsten Frage
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                setTimeout(() => {
+                    displayCurrentQuestion();
+                }, 2000);
+            } else {
+                setTimeout(() => {
+                    document.getElementById('quizScreen').classList.add('hidden');
+                    document.getElementById('userWinnerScreen').classList.remove('hidden');
+                    currentQuestionIndex = 0;
+                }, 2000);
+            }
+        } else if (userAnswer === "") {
+            feedback.classList.add('incorrect');
+            feedback.innerHTML = '⚠️ Bitte gib eine Antwort ein!';
+        } else {
+            wrongAttempts++;
+            feedback.classList.add('incorrect');
+            feedback.innerHTML = '❌ Leider falsch! Versuche es noch einmal! 🎅';
+
+            // Tipp-Button nach 3 falschen Versuchen anzeigen
+            if (wrongAttempts >= 3) {
+                document.getElementById('tippButton').classList.remove('hidden');
+            }
+        }
+    }
+
+    // Tipp anzeigen
+    function showTipp() {
+        const tipp = questions[currentQuestionIndex].tipp;
+        document.getElementById('tippText').textContent = tipp;
+        document.getElementById('tippBox').style.display = 'block';
+        document.getElementById('tippButton').classList.add('hidden');
+    }
+
+    // Enter-Taste zum Absenden
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            if (!document.getElementById('loginScreen').classList.contains('hidden')) {
+                login();
+            } else if (!document.getElementById('quizScreen').classList.contains('hidden')) {
+                checkAnswer();
+            }
+        }
+    });
+
+    // Gewinner-Code für User anzeigen
+    function showUserWinnerCode() {
+        document.getElementById('winnerCodeDisplay').textContent = Geschenk_1;
+        document.getElementById('userWinnerReveal').classList.remove('hidden');
+    }
+
+    // Zweiten Code anzeigen
+    function showSecondCode() {
+        document.getElementById('secondCodeDisplay').textContent = Geschenk_2;
+        document.getElementById('secondCodeReveal').classList.remove('hidden');
+    }
+
+    // Quiz neu starten
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        document.getElementById('userWinnerScreen').classList.add('hidden');
+        document.getElementById('userWinnerReveal').classList.add('hidden');
+        document.getElementById('secondCodeReveal').classList.add('hidden');
+        document.getElementById('loginScreen').classList.remove('hidden');
+        document.getElementById('loginPassword').value = '';
+    }
+</script>
+</body>
+</html>
