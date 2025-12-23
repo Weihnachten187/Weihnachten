@@ -236,6 +236,7 @@
             <div style="background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%); padding: 30px; border-radius: 20px; text-align: center; margin: 20px 0;">
                 <h2 style="color: #333; margin-bottom: 20px; font-size: 1.8em;">🏆 Geschenk 1 🏆</h2>
                 <div style="background: white; padding: 25px; border-radius: 15px; font-size: 2.5em; font-weight: bold; color: #c41e3a; letter-spacing: 3px; font-family: 'Courier New', monospace; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" id="winnerCodeDisplay"></div>
+                <button onclick="copyCode1()" style="background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%); margin-top: 15px; font-size: 1em;">📋 Code kopieren</button>
             </div>
             <button onclick="showSecondCode()" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); margin-bottom: 10px;">➡️ Weiter zum zweiten Code</button>
         </div>
@@ -243,7 +244,13 @@
             <div style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); padding: 30px; border-radius: 20px; text-align: center; margin: 20px 0;">
                 <h2 style="color: white; margin-bottom: 20px; font-size: 1.8em;">🎉 Geschenk 2 🎉</h2>
                 <div style="background: white; padding: 25px; border-radius: 15px; font-size: 2.5em; font-weight: bold; color: #007bff; letter-spacing: 3px; font-family: 'Courier New', monospace; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" id="secondCodeDisplay"></div>
+                <button onclick="copyCode2()" style="background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%); margin-top: 15px; font-size: 1em;">📋 Code kopieren</button>
             </div>
+        </div>
+        <button id="qrCodeButton" onclick="showQRCode()" class="hidden" style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); margin-top: 20px;">📱 QR-Code anzeigen</button>
+        <div id="qrCodeContainer" class="hidden" style="background: white; padding: 30px; border-radius: 20px; text-align: center; margin: 20px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+            <h2 style="color: #9c27b0; margin-bottom: 20px;">🎁 Deine Hilfe 🎁</h2>
+            <img id="qrCodeImage" src="" alt="QR Code" style="max-width: 100%; height: auto; border-radius: 10px;">
         </div>
         <button onclick="restartQuiz()" style="margin-top: 20px;">🔄 Quiz neu starten</button>
     </div>
@@ -272,7 +279,7 @@
     // HIER KANNST DU DIE GEWINNER-CODES ÄNDERN
     // ============================================
     const Geschenk_1 = "Hftdifol 1 jo nfjofn Ajnnfs (ofv)";
-    const Geschenk_2 = "qqdz gjqx qlkrzw odjh uheurifkv odpqlh";
+    const Geschenk_2 = "qqdz gqx qlkrz odjh uhrirkfv odpqlh :2 nqhkfvhj";
 
     // Quiz Daten - HIER KANNST DU DIE TIPPS ÄNDERN
     const questions = [
@@ -424,6 +431,22 @@
     function showSecondCode() {
         document.getElementById('secondCodeDisplay').textContent = Geschenk_2;
         document.getElementById('secondCodeReveal').classList.remove('hidden');
+
+        // QR-Code Button erscheint nach 5 Minuten (300000 Millisekunden)
+        setTimeout(() => {
+            document.getElementById('qrCodeButton').classList.remove('hidden');
+        }, 10000); // 5 Minuten = 300000 ms
+    }
+
+    // QR-Code anzeigen (LOKALE DATEI)
+    function showQRCode() {
+        // HIER KANNST DU DEN DATEINAMEN DEINES LOKALEN QR-CODES EINFÜGEN
+        // Die Datei muss im gleichen Ordner wie diese HTML-Datei liegen
+        const qrCodeURL = "qr_code.png"; // Ändere dies zu deinem Dateinamen, z.B. "mein-qr.jpg"
+
+        document.getElementById('qrCodeImage').src = qrCodeURL;
+        document.getElementById('qrCodeContainer').classList.remove('hidden');
+        document.getElementById('qrCodeButton').classList.add('hidden');
     }
 
     // Quiz neu starten
@@ -432,8 +455,36 @@
         document.getElementById('userWinnerScreen').classList.add('hidden');
         document.getElementById('userWinnerReveal').classList.add('hidden');
         document.getElementById('secondCodeReveal').classList.add('hidden');
+        document.getElementById('qrCodeButton').classList.add('hidden');
+        document.getElementById('qrCodeContainer').classList.add('hidden');
         document.getElementById('loginScreen').classList.remove('hidden');
         document.getElementById('loginPassword').value = '';
+    }
+
+    // Code 1 kopieren
+    function copyCode1() {
+        const code = document.getElementById('winnerCodeDisplay').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '✅ Kopiert!';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+            }, 2000);
+        });
+    }
+
+    // Code 2 kopieren
+    function copyCode2() {
+        const code = document.getElementById('secondCodeDisplay').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '✅ Kopiert!';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+            }, 2000);
+        });
     }
 </script>
 </body>
